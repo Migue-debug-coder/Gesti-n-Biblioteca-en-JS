@@ -61,7 +61,7 @@ do {
             } else {
                 const titulo = window.prompt("Introduzca el Título del Libro: ");
                 const autor = window.prompt("Introduzca el Autor del Libro: ");
-                const numEjemplares = window.prompt("Introduzca el Número de Ejemplares del Libro");
+                const numEjemplares = parseInt(window.prompt("Introduzca el Número de Ejemplares del Libro"));
                 let libro = new Libro(titulo, autor, numEjemplares);
                 catalogo_biblio.set(isbn, libro);
             }
@@ -101,7 +101,7 @@ do {
             break;
         case "E":
             isbn = solicitarISBN();
-            let cantidad = window.prompt("Introduzca una cantidad: ");
+            let cantidad = parseInt(window.prompt("Introduzca una cantidad: "));
             catalogo_biblio.get(isbn).numEjemplares = cantidad;
             break;
         case "F":
