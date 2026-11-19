@@ -1,5 +1,5 @@
 let catalogo_biblio = new Map();
-const isbn = 0;
+let isbn = 0;
 let validacion = false;
 
 class Libro {
@@ -9,27 +9,27 @@ class Libro {
         this.ejemplares = ejemplares;
     }
 
-    get titulo() {
+    getTitulo() {
         return this.titulo;
     }
 
-    set titulo(titulo) {
+    setTitulo(titulo) {
         this.titulo = titulo;
     }
 
-    get autor() {
+    getAutor() {
         return this.autor;
     }
 
-    set autor(autor) {
+    setAutor(autor) {
         this.autor = autor;
     }
 
-    get ejemplares() {
+    getEjemplares() {
         return this.ejemplares;
     }
 
-    set ejemplares(ejemplares) {
+    setEjemplares(ejemplares) {
         this.ejemplares = ejemplares;
     }
 
@@ -39,7 +39,7 @@ class Libro {
 }
 
 do {
-    const opcion = window.prompt("Bienvenido al Gestor de Notas,¿Que desea Realizar?: \n" +
+    const opcion = window.prompt("Bienvenido al Gestor de Libros de la Biblioteca,¿Que desea Realizar?: \n" +
         "A. Añadir un libro \n" +
         "B. Eliminar un libro \n" +
         "C. Consultar un libro \n" +
@@ -68,11 +68,11 @@ do {
             break;
         case "B":
             isbn = solicitarISBN();
-            if (catalogo_biblio.has(codigo)) {
-                catalogo_biblio.delete(codigo);
-                window.alert(`Libro con ISBN ${codigo} eliminado correctamente`);
+            if (catalogo_biblio.has(isbn)) {
+                catalogo_biblio.delete(isbn);
+                window.alert(`Libro con ISBN ${isbn} eliminado correctamente`);
             } else {
-                window.alert(`Libro con ISBN ${codigo} no encontrado`);
+                window.alert(`Libro con ISBN ${isbn} no encontrado`);
             }
             break;
         case "C":
@@ -89,43 +89,55 @@ do {
             if (catalogo_biblio.size == 0) {
                 window.alert("No existen libros registrados");
             } else {
-                let libros_registrados = 0;
                 for (let libro of catalogo_biblio.keys()) {
-                    console.log(`Libro: ${libro} \n` +
+                    window.alert(`Libro: ${libro} \n` +
                         `${catalogo_biblio.get(libro).toString()}`
                     );
-                    libros_registrados++;
                 }
-                console.log(`El Número Total de Libros Registrados es de: ${libros_registrados}`);
+                window.alert(`El Número Total de Libros Registrados es de: ${catalogo_biblio.size}`);
             }
             break;
         case "E":
             isbn = solicitarISBN();
-            let cantidad = parseInt(window.prompt("Introduzca una cantidad: "));
-            catalogo_biblio.get(isbn).numEjemplares = cantidad;
+            if (!catalogo_biblio.has(isbn)) {
+                window.alert("No existe un Libro que tenga asignado el ISBN introducido");
+            } else {
+                let cantidad = parseInt(window.prompt("Introduzca una cantidad: "));
+                if (!cantidad < 0) {
+                    catalogo_biblio.get(isbn).setEjemplares(cantidad);
+                }else{
+                    window.alert("La cantidad de ejemplares debe ser positiva o 0");
+                }
+            }
+
             break;
         case "F":
-            let nombre = window.prompt("Introduzca el nombre del autor: ");
+            let autor = window.prompt("Introduzca el nombre del autor: ");
             for (let codigo of catalogo_biblio.keys()) {
-                if (catalogo_biblio.get(codigo) == nombre) {
-                    catalogo_biblio.get(codigo).toString();
+                if (catalogo_biblio.get(codigo).getAutor().toLowerCase() == autor.toLowerCase()) {
+                    window.alert(catalogo_biblio.get(codigo).toString());
                 }
             }
             break;
         case "G":
             isbn = solicitarISBN();
-            if (catalogo_biblio.get(isbn).numEjemplares != 0) {
-                catalogo_biblio.get(isbn).numEjemplares--;
+            if (!catalogo_biblio.has(isbn)) {
+                window.alert("No existe un Libro que tenga asignado el ISBN introducido");
             } else {
-                window.alert("No quedan ejemplares disponibles");
+                if (catalogo_biblio.get(isbn).getEjemplares() > 0) {
+                    catalogo_biblio.get(isbn).setEjemplares(catalogo_biblio.get(isbn).getEjemplares() - 1);
+                } else {
+                    window.alert("No quedan ejemplares disponibles");
+                }
             }
+
             break;
         case "H":
             isbn = solicitarISBN();
             if (!catalogo_biblio.has(isbn)) {
                 window.alert("El Libro con el ISBN introducido no existe");
             } else {
-                catalogo_biblio.get(isbn).numEjemplares++;
+                catalogo_biblio.get(isbn).setEjemplares(catalogo_biblio.get(isbn).getEjemplares() + 1);
             }
             break;
         case "I":
@@ -135,20 +147,20 @@ do {
                 let total_libros = 0;
                 let total_ejemplares = 0;
                 for (let codigo of catalogo_biblio.keys()) {
-                    total_ejemplares += catalogo_biblio.get(codigo).numEjemplares;
+                    total_ejemplares += catalogo_biblio.get(codigo).getEjemplares();
                     total_libros++;
                 }
                 let ejemplares_max = 0;
-                for (codigo of catalogo_biblio.keys()) {
-                    if (ejemplares_max < catalogo_biblio.get(codigo).numEjemplares) {
-                        ejemplares_max = catalogo_biblio.get(codigo).numEjemplares;
+                for (let codigo of catalogo_biblio.keys()) {
+                    if (ejemplares_max < catalogo_biblio.get(codigo).getEjemplares()) {
+                        ejemplares_max = catalogo_biblio.get(codigo).getEjemplares();
                     }
                 }
                 window.alert(`Total de libros registrados: ${total_libros} \n` +
-                    `Total de ejemplares disponibles: ${ejemplares_max} \n`
+                    `Total de ejemplares disponibles: ${total_ejemplares} \n`
                 );
-                for (codigo of catalogo_biblio.keys()) {
-                    if (catalogo_biblio.get(codigo).numEjemplares == ejemplares_max) {
+                for (let codigo of catalogo_biblio.keys()) {
+                    if (catalogo_biblio.get(codigo).getEjemplares() == ejemplares_max) {
                         window.alert(`Libro con más ejemplares: ${codigo} \n` +
                             `${catalogo_biblio.get(codigo).toString()}`
                         );
